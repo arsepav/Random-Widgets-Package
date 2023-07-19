@@ -78,7 +78,7 @@ class _StaggeredAnimation extends StatelessWidget {
       Key? key,
       required this.controller,
       required this.coin})
-      : flip = Tween(begin: 0.0, end: 2 * pi).animate(CurvedAnimation(
+      : flip = Tween(begin: 0.0, end: 10 * pi).animate(CurvedAnimation(
             parent: controller,
             curve: Interval(0.0, 0.4, curve: Curves.bounceIn))),
         size = Tween(begin: radius * 2, end: radius * 2).animate(
