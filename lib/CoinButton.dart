@@ -2,27 +2,24 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:ui' as ui;
 
-
-
 enum Coins { Ruble, Euro, Cent }
 
 class CoinButton extends StatefulWidget {
   final double radius;
   final ui.VoidCallback? onPressed;
   final Coins coin;
+  final Duration duration;
 
-  CoinButton(
-      {required VoidCallback? onPressed,
-      required double radius,
+  const CoinButton(
+      {this.onPressed,
+      required this.radius,
       super.key,
-      required Coins coin})
-      : this.radius = radius,
-        this.onPressed = onPressed,
-        this.coin = coin;
+      required this.coin,
+      required this.duration});
 
   @override
   _CoinButtonState createState() =>
-      _CoinButtonState(radius: radius, onPressed: onPressed, coin: coin);
+      _CoinButtonState(radius: radius, onPressed: onPressed, coin: coin, duration: duration);
 }
 
 class _CoinButtonState extends State<CoinButton> with TickerProviderStateMixin {
@@ -30,17 +27,14 @@ class _CoinButtonState extends State<CoinButton> with TickerProviderStateMixin {
   final double radius;
   final ui.VoidCallback? onPressed;
   final Coins coin;
-  _CoinButtonState(
-      {required this.radius,
-      this.onPressed,
-      required this.coin});
-
+  final Duration duration;
+  _CoinButtonState({required this.radius, this.onPressed, required this.coin, required this.duration});
 
   @override
   void initState() {
     super.initState();
     controller =
-        AnimationController(duration: Duration(milliseconds: 1500), vsync: this)
+        AnimationController(duration: duration, vsync: this)
           ..addListener(() {
             if (controller.value >= 0.4 && controller.value < 0.5) {
               reverseAndElevateDown();
@@ -72,6 +66,7 @@ class _CoinButtonState extends State<CoinButton> with TickerProviderStateMixin {
 
 class _StaggeredAnimation extends StatelessWidget {
   bool _odd = false;
+
   _StaggeredAnimation(
       {this.onPressed,
       required double this.radius,
