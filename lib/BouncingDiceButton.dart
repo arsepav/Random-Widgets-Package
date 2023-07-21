@@ -1,11 +1,7 @@
 import 'dart:math';
-
-import 'package:diceandcoin/Coin.dart';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-
-import 'dice.dart';
-
-var pi = 3.14159265359;
+import 'Dice.dart';
 
 int sign(double n) {
   if (n > 0) {
@@ -16,43 +12,45 @@ int sign(double n) {
   return 0;
 }
 
-class BouncingObjectPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Bouncing Object'),
-      ),
-      body: Center(
-        child: BouncingNumber(),
-      ),
-    );
+class DiceButtonValue {
+  int value = 0;
+}
+
+class BouncingDiceButton extends StatefulWidget {
+  final double size;
+  final int start;
+  final int end;
+  final Duration duration;
+  int value = 1;
+
+
+  int getValue(){
+    return value;
   }
-}
 
-class BouncingNumber extends StatefulWidget {
-  double size;
-  int start;
-  int end;
+  final ui.VoidCallback? onPressed;
 
-  BouncingNumber({this.size = 100, this.start = 1, this.end = 7});
+  BouncingDiceButton({super.key,
+    this.size = 100,
+    this.start = 1,
+    this.end = 7,
+    required this.onPressed,
+    this.duration = const Duration(milliseconds: 500),
+  });
 
   @override
-  _BouncingNumberState createState() => _BouncingNumberState(this.size, this.start, this.end);
+  State<BouncingDiceButton> createState() =>
+      _BouncingDiceButtonState();
 }
 
-class _BouncingNumberState extends State<BouncingNumber>
+class _BouncingDiceButtonState extends State<BouncingDiceButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
-  double size;
-  int start;
-  int end;
 
-  _BouncingNumberState(this.size, this.start, this.end);
+  _BouncingDiceButtonState();
 
-  int _number = 1;
   double _yOffset = 0.0;
   double _rotation = 0.0;
 
@@ -61,11 +59,11 @@ class _BouncingNumberState extends State<BouncingNumber>
     super.initState();
 
     _controller = AnimationController(
-      duration: Duration(milliseconds: 500),
+      duration: widget.duration,
       vsync: this,
     );
 
-    _animation = Tween<double>(begin: 0, end: size*1.5).animate(
+    _animation = Tween<double>(begin: 0, end: widget.size * 1.5).animate(
       CurvedAnimation(
         parent: _controller,
         curve: Curves.easeInOut,
@@ -75,7 +73,7 @@ class _BouncingNumberState extends State<BouncingNumber>
     _controller.addListener(() {
       setState(() {
         _yOffset = _animation.value;
-        _rotation = _animation.value * 0.7; // Устанавливаем вращение в зависимости от _yOffset
+        _rotation = _animation.value * 0.7;
       });
     });
 
@@ -97,24 +95,26 @@ class _BouncingNumberState extends State<BouncingNumber>
 
   void _changeNumber() {
     setState(() {
-      _number = Random().nextInt(end - start) + start;
+      widget.value = Random().nextInt(widget.end - widget.start) + widget.start;
     });
   }
 
   void _resetNumber() {
-    setState(() {
-    });
+    setState(() {});
   }
 
   void _onTap() {
     if (!_controller.isAnimating) {
       _controller.forward();
+      Future.delayed(widget.duration, () {
+        widget.onPressed?.call();
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    _number = Random().nextInt(end-start) + start;
+    widget.value = Random().nextInt(widget.end - widget.start) + widget.start;
     return GestureDetector(
       onTap: _onTap,
       child: AnimatedBuilder(
@@ -125,11 +125,10 @@ class _BouncingNumberState extends State<BouncingNumber>
             child: Transform.rotate(
               angle: _rotation,
               child: Center(
-                child: Dice(
-                  value: _number,
-                  size: size,
-                )
-              ),
+                  child: Dice(
+                value: widget.value,
+                size: widget.size,
+              )),
             ),
           );
         },

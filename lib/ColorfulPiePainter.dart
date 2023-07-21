@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import "dart:math";
 
-class ColorfullPie extends StatelessWidget {
-  double size;
-  List<Color> colors;
+class ColorfulPie extends StatelessWidget {
+  final double size;
+  final List<Color> colors;
 
-  ColorfullPie({required this.size, required this.colors});
+  const ColorfulPie({super.key, required this.size, required this.colors});
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +18,11 @@ class ColorfullPie extends StatelessWidget {
           painter: PieSlicePainter(
             color: color2,
             startAngle: start,
-            sweepAngle: 6.28318530718 / colors.length,
+            sweepAngle: pi * 2 / colors.length,
           ),
         ),
       );
-      start = start + 6.28318530718 / colors.length;
+      start = start + pi * 2 / colors.length;
     }
     return SizedBox(
       width: size,

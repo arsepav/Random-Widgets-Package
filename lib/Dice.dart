@@ -190,7 +190,7 @@ class Dot extends StatelessWidget {
   Color color;
   double size;
 
-  Dot({this.color = Colors.black, this.size = 20});
+  Dot({super.key, this.color = Colors.black, this.size = 20});
 
   @override
   Widget build(BuildContext context) {

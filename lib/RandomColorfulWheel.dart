@@ -1,7 +1,6 @@
 import 'package:diceandcoin/ColorfulPiePainter.dart';
-import 'package:diceandcoin/main.dart';
 import 'package:flutter/material.dart';
-
+import 'dart:ui' as ui;
 import 'RotatingWidget.dart';
 
 class TrianglePainter extends CustomPainter {
@@ -55,31 +54,44 @@ class TriangleWidget extends StatelessWidget {
 class RandomColorWheel extends StatelessWidget {
   List<Color> colors;
   double size;
+  Duration duration;
+  late RotationAnimationWheel widget;
+  final ui.VoidCallback? onPressed;
+  bool waitForAnimation;
 
-  late RotationAnimationWidget widget;
+  RandomColorWheel({
+    super.key,
+    required this.colors,
+    this.size = 25,
+    required this.onPressed,
+    this.duration = const Duration(milliseconds: 500),
+    this.waitForAnimation = true,
+  });
 
-  RandomColorWheel({required this.colors, this.size = 25});
-
-  Color getColor(){
-    //print(((widget.getPosition() + pi/2) % (pi * 2)) / 2 / pi * colors.length);
-    return colors[colors.length - 1 - (((widget.getPosition() - pi/2) % (pi * 2)) / 2 / pi * colors.length).floor()];
+  Color getColor() {
+    return colors[colors.length -
+        1 -
+        (((widget.getPosition() - pi / 2) % (pi * 2)) / 2 / pi * colors.length)
+            .floor()];
   }
 
   @override
   Widget build(BuildContext context) {
-    widget = RotationAnimationWidget(
-    size: size,
-    child: ColorfullPie(
-    colors: colors,
-    size: size,
-    ),
-    );
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
         Column(
           children: [
-            widget,
+            RotationAnimationWheel(
+              onPressed: onPressed,
+              size: size,
+              child: ColorfulPie(
+                colors: colors,
+                size: size,
+              ),
+              duration: duration,
+              waitForAnimation: waitForAnimation,
+            ),
             SizedBox(
               height: 0.1 * size,
             ),

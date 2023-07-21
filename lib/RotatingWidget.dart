@@ -1,52 +1,45 @@
 import "package:flutter/material.dart";
-import 'ColorfulPiePainter.dart';
 import 'dart:math';
+import 'dart:ui' as ui;
 
 const pi = 3.14159265359;
 
+class RotationAnimationWheel extends StatefulWidget {
+  final double size;
+  final StatelessWidget child;
+  final double rotation;
+  double position = 0;
+  final ui.VoidCallback? onPressed;
+  final Duration duration;
+  final bool waitForAnimation;
 
-class RotationAnimationWidget extends StatefulWidget {
-  double size;
-  StatelessWidget child;
-  int duration;
-  double rotation;
-  double c = 0;
-
-  double getPosition(){
-    return c;
+  double getPosition() {
+    return position;
   }
 
-  RotationAnimationWidget(
-      {required this.size,
-      required this.child,
-      this.duration = 1,
-      this.rotation = 360});
+  RotationAnimationWheel({
+    super.key,
+    required this.size,
+    required this.child,
+    this.rotation = 360,
+    required this.onPressed,
+    this.duration = const Duration(milliseconds: 500),
+    this.waitForAnimation = true,
+  });
 
   @override
-  _RotationAnimationWidgetState createState() {
-    return _RotationAnimationWidgetState(
-        size: size,
-        widget1: child,
-        timeDuration: duration,
-        rotation: rotation);
-  }
+  State<RotationAnimationWheel> createState() => _RotationAnimationWheelState();
 }
 
-class _RotationAnimationWidgetState extends State<RotationAnimationWidget>
+class _RotationAnimationWheelState extends State<RotationAnimationWheel>
     with SingleTickerProviderStateMixin {
-  double size;
-  StatelessWidget widget1;
-  int timeDuration;
-  double rotation;
   double position = 0;
   late double rotationRad;
 
+  // final ui.VoidCallback? onPressed;
+  // bool waitForAnimation;
 
-  _RotationAnimationWidgetState(
-      {required this.size,
-      required this.widget1,
-      required this.rotation,
-      required this.timeDuration});
+  _RotationAnimationWheelState();
 
   late AnimationController _animationController;
   Animation<double>? _rotationAnimation;
@@ -56,7 +49,7 @@ class _RotationAnimationWidgetState extends State<RotationAnimationWidget>
     super.initState();
 
     _animationController = AnimationController(
-      duration: Duration(seconds: timeDuration),
+      duration: widget.duration,
       vsync: this,
     );
 
@@ -80,7 +73,7 @@ class _RotationAnimationWidgetState extends State<RotationAnimationWidget>
             .animate(_animationController);
     position += rotationRad;
     position = position % (pi * 4);
-    widget.c = position;
+    widget.position = position;
     _animationController.forward();
   }
 
@@ -90,9 +83,15 @@ class _RotationAnimationWidgetState extends State<RotationAnimationWidget>
     return GestureDetector(
       onTap: () {
         if (!_animationController.isAnimating) {
-          setState(() {
-          });
+          setState(() {});
           _startAnimation();
+        }
+        if (widget.waitForAnimation) {
+          Future.delayed(widget.duration, () {
+            widget.onPressed?.call();
+          });
+        } else {
+          widget.onPressed?.call();
         }
       },
       child: AnimatedBuilder(
@@ -103,7 +102,7 @@ class _RotationAnimationWidgetState extends State<RotationAnimationWidget>
             child: child,
           );
         },
-        child: widget1,
+        child: widget.child,
       ),
     );
   }
