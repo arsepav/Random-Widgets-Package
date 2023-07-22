@@ -1,8 +1,8 @@
 import 'package:diceandcoin/BouncingDiceButton.dart';
 import 'package:diceandcoin/CoinButton.dart';
 import 'package:flutter/material.dart';
-import 'RandomColorfulWheel.dart';
-import 'magic_sphere.dart';
+import '../lib/RandomColorfulWheel.dart';
+import '../lib/magic_sphere.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
