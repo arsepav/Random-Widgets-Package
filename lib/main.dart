@@ -54,6 +54,9 @@ class MyApp extends StatelessWidget {
                 height: 50,
               ),
               BouncingDiceButton(
+                start: 1,
+                end: 6,
+                duration: Duration(milliseconds: 500),
                 onPressed: () {
                   print("hello");
                 },
