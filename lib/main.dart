@@ -2,6 +2,7 @@ import 'package:diceandcoin/BouncingDiceButton.dart';
 import 'package:diceandcoin/CoinButton.dart';
 import 'package:flutter/material.dart';
 import 'RandomColorfulWheel.dart';
+import 'magic_sphere.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -15,7 +16,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DiceButtonValue value = DiceButtonValue();
     return MaterialApp(
       title: 'Example for Random Widget Tools package',
       home: Scaffold(
@@ -89,6 +89,16 @@ class MyApp extends StatelessWidget {
                     duration: const Duration(seconds: 2),
                   ),
                 ],
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              const Magic8Ball(
+                radius: 100,
+                shakeDistance: 15,
+                numberOfShakes: 10,
+                durationOfShake: Duration(milliseconds: 100),
+                answers: ["yes", "definetly yes"],
               ),
               const SizedBox(
                 height: 50,
